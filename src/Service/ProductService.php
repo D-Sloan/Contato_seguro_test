@@ -12,15 +12,17 @@ class ProductService
         $this->pdo = DB::connect();
     }
 
-    public function getAll($adminUserId)
+    public function getAll($adminUserId, $activeProduct = null, $categoryId = null, $orderBy = null, $typeOrder = null)
     {
         $query = "
             SELECT p.*, c.title as category
             FROM product p
             INNER JOIN product_category pc ON pc.product_id = p.id
-            INNER JOIN category c ON c.id = pc.id
+            INNER JOIN category c ON c.id = pc.cat_id
             WHERE p.company_id = {$adminUserId}
-        ";
+            ". (!is_null($activeProduct) ? ("AND p.active = ".$activeProduct) : "")."
+            ". (!is_null($categoryId) ? ("AND c.id = ".$categoryId) : "")."
+            ". (!is_null($orderBy) ? ("ORDER BY ".$orderBy." ".$typeOrder) : "");
 
         $stm = $this->pdo->prepare($query);
 
@@ -154,9 +156,25 @@ class ProductService
     public function getLog($id)
     {
         $stm = $this->pdo->prepare("
-            SELECT *
-            FROM product_log
+            SELECT pl.*, au.name as user
+            FROM product_log pl
+            INNER JOIN admin_user au ON au.id = pl.admin_user_id
             WHERE product_id = {$id}
+        ");
+        $stm->execute();
+
+        return $stm;
+    }
+
+    public function getLastUpdate($id)
+    {
+        $stm = $this->pdo->prepare("
+            SELECT pl.*, au.name as user
+            FROM product_log pl
+            INNER JOIN admin_user au ON au.id = pl.admin_user_id
+            WHERE product_id = {$id}
+            AND action = 'update'
+            ORDER BY timestamp DESC
         ");
         $stm->execute();
 
