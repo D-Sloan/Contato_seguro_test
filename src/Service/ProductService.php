@@ -14,14 +14,17 @@ class ProductService
 
     public function getAll($adminUserId, $activeProduct = null, $categoryId = null, $orderBy = null, $typeOrder = null)
     {
+
+
         $query = "
-            SELECT p.*, c.title as category
-            FROM product p
-            INNER JOIN product_category pc ON pc.product_id = p.id
-            INNER JOIN category c ON c.id = pc.cat_id
+        SELECT p.*, GROUP_CONCAT(c.title) as categories
+        FROM product p
+        INNER JOIN product_category pc ON pc.product_id = p.id
+        INNER JOIN category c ON c.id = pc.cat_id
             WHERE p.company_id = {$adminUserId}
             ". (!is_null($activeProduct) ? ("AND p.active = ".$activeProduct) : "")."
             ". (!is_null($categoryId) ? ("AND c.id = ".$categoryId) : "")."
+            GROUP BY p.id
             ". (!is_null($orderBy) ? ("ORDER BY ".$orderBy." ".$typeOrder) : "");
 
         $stm = $this->pdo->prepare($query);

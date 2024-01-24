@@ -43,19 +43,19 @@ Caso opte por usar o [Postman](https://www.postman.com/) o arquivo para importa�
 Abaixo, as solicitações do cliente:
 
 ### Categorias
-- [ ] A categoria está vindo errada na listagem de produtos para alguns casos
+- [x] A categoria está vindo errada na listagem de produtos para alguns casos
   (_exemplo: produto `blue trouser` está vindo na categoria `phone` e deveria ser `clothing`_);
-- [ ] Alguns produtos estão vindo com a categoria `null` ao serem pesquisados individualmente (_exemplo: produto `iphone 8`_);
-- [ ] Cadastrei o produto `king size bed` em mais de uma categoria, mas ele aparece **apenas** na categoria `furniture` na busca individual do produto.
+- [x] Alguns produtos estão vindo com a categoria `null` ao serem pesquisados individualmente (_exemplo: produto `iphone 8`_);
+- [x] Cadastrei o produto `king size bed` em mais de uma categoria, mas ele aparece **apenas** na categoria `furniture` na busca individual do produto.
 
 ### Filtros e Ordenamento
 Para a listagem de produtos:
-- [ ] Gostaria de poder filtrar os produtos ativos e inativos;
-- [ ] Gostaria de poder filtrar os produtos por categoria;
-- [ ] Gostaria de poder ordenar os produtos por data de cadastro.
+- [x] Gostaria de poder filtrar os produtos ativos e inativos;
+- [x] Gostaria de poder filtrar os produtos por categoria;
+- [x] Gostaria de poder ordenar os produtos por data de cadastro.
 
 ### Relatório
-- [ ] O relatório não está mostrando a coluna de logs corretamente, se possível, gostaria de trazer no seguinte formato:
+- [x] O relatório não está mostrando a coluna de logs corretamente, se possível, gostaria de trazer no seguinte formato:
   (Nome do usuário, Tipo de alteração e Data),
   (Nome do usuário, Tipo de alteração e Data),
   (Nome do usuário, Tipo de alteração e Data)
@@ -65,7 +65,7 @@ Para a listagem de produtos:
   (Joe Doe, Remoção, 21/12/2023 14:52:50)
 
 ### Logs
-- [ ] Gostaria de saber qual usuário mudou o preço do produto `iphone 8` por último.
+- [x] Gostaria de saber qual usuário mudou o preço do produto `iphone 8` por último.
 
 ### Extra
 - [ ] Aqui fica um desafio extra **opcional**: _criar um ambiente com_ Docker _para a api_.
@@ -79,4 +79,28 @@ Sinta-se a vontade para refatorar o que achar pertinente, considerando questões
 Boa sorte! :)
 
 ## Suas Respostas, Duvidas e Observações
-[Adicione  aqui suas respostas, dúvidas e observações]
+
+
+Para as atualizações em categorias:
+- Para o erro de trazer a categoria errada foi ajustado a query que buscava, pois estava comparando a coluna errada.
+- Para os que estavam trazendo NULL, atualizei diretamente no banco (apesar de não ser o recomendado) a coluna de company_id das categorias, como no sistema havia apenas uma empresa registrada, achei pertinente colocar todas as categorias como company_id 1.
+- Na rota de buscar o produto específico alterei o código para listar mais de 1 categoria como array, caso exista mais de 1 categoria relacionada na tabela de product_category
+
+Para atualizações em Filtros e Ordenamento:
+- Adicionei os 3 campos de filtro para serem recebidos no params (utilizei postaman para testar).
+- Para ordenação, criei 2 parametros que podem ser enviados ou não: orderBy e typeOrder. No orderBy será onde será indicado o campo que será ordenado (created_at, id, title, price e etc), no typeOrder será indicado o tipo da ordenação (ASC ou DESC).
+- Para o filtro de categoria, criei um parâmetro categoryId, onde será passado o id da categoria que irá filtrar os produtos, serão listados apenas os produtos da categoria enviada
+- Para o filtro de ativo, criei o parâmetro active, onde será enviado 1 ou 0 para trazer ativo ou inativo
+- Os filtros poderão ser combinados ou enviados individualmente, exceto o orderType que só será considerado caso o orderBy tenha sido enviado também.
+
+Para a atualização no Relatório:
+- Fora adicionado manualmente uma estruturação de uma string para o formado requisitado onde percorro o array de objetos por um foreach e monto a lista de log de cada produto
+- Ainda no arquivo de ReportController, me dei a liberdade de adicionar a listagem das categorias da mesma forma, para aqueles produtos que possuem mais de 1 categoria.
+
+
+Para a atualização de Logs:
+- Fora solicitado a informação de qual usuário atualizou por ultimo o preço de determinado produto, então criei uma rota /products/lastUpdate/{id} para listar a ultima atualização feita no produto em questão.
+
+
+Extra:
+- na listagem de todos os produtos, alterei a query para que trouxesse todas as categorias dos produtos separada por virgula.
