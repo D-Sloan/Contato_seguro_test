@@ -59,11 +59,13 @@ class CategoryController
         $body = $request->getParsedBody();
         $adminUserId = $request->getHeader('admin_user_id')[0];
 
-        if ($this->service->insertOne($body, $adminUserId)) {
+
+        $response_data = $this->service->insertOne($body, $adminUserId);
+        if(!is_string($response_data) && $response_data){
             $response->getBody()->write(json_encode(["status"=>"success", "message"=>"Categoria cadastrada com sucesso!"]));
             return $response->withStatus(200);
-        } else {
-            $response->getBody()->write(json_encode(["status"=>"error", "message"=>"Erro ao cadastrar categoria"]));
+        }else{
+            $response->getBody()->write(json_encode(["status"=>"error", "message"=> is_string($response_data) ? $response_data : "Erro ao cadastrar categoria"]));
             return $response->withStatus(404);
         }
     }
@@ -78,11 +80,12 @@ class CategoryController
         $body = $request->getParsedBody();
         $adminUserId = $request->getHeader('admin_user_id')[0];
 
-        if ($this->service->updateOne($args['id'], $body, $adminUserId)) {
+        $response_data = $this->service->updateOne($args['id'], $body, $adminUserId);
+        if(!is_string($response_data) && $response_data){
             $response->getBody()->write(json_encode(["status"=>"success", "message"=>"Categoria alterada com sucesso!"]));
             return $response->withStatus(200);
-        } else {
-            $response->getBody()->write(json_encode(["status"=>"error", "message"=>"Erro ao alterar categoria"]));
+        }else {
+            $response->getBody()->write(json_encode(["status"=>"error", "message"=> is_string($response_data) ? $response_data : "Erro ao alterar categoria"]));
             return $response->withStatus(404);
         }
     }
@@ -96,10 +99,10 @@ class CategoryController
 
         $adminUserId = $request->getHeader('admin_user_id')[0];
 
-        if ($this->service->deleteOne($args['id'], $adminUserId)) {
+        if($this->service->deleteOne($args['id'], $adminUserId)){
             $response->getBody()->write(json_encode(["status"=>"success", "message"=>"Categoria removida com sucesso!"]));
             return $response->withStatus(200);
-        } else {
+        }else{
             $response->getBody()->write(json_encode(["status"=>"error", "message"=>"Erro ao remover categoria"]));
             return $response->withStatus(404);
         }

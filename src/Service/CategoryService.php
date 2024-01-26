@@ -63,6 +63,12 @@ class CategoryService
 
     public function insertOne($body, $adminUserId)
     {
+
+        $errors = $this->checkInsertData($body);
+
+        if(!empty($errors))
+            return $errors;
+
         $stm = $this->pdo->prepare("
             INSERT INTO category (
                 company_id,
@@ -80,6 +86,12 @@ class CategoryService
 
     public function updateOne($id, $body, $adminUserId)
     {
+
+        $errors = $this->checkUpdateData($body);
+
+        if(!empty($errors))
+            return $errors;
+
         $active = (int)$body['active'];
 
         $stm = $this->pdo->prepare("
@@ -118,5 +130,32 @@ class CategoryService
         $stm->execute();
 
         return $stm->fetch()->company_id;
+    }
+
+    private function checkInsertData($body){
+
+        $errors = "";
+
+        if(empty($body['title'])){
+            $errors .="O campo 'title' é obrigatório. \n";
+        }
+
+        if(!isset($body['active'])){
+            $errors .="O campo 'active' é obrigatório. \n";
+        }
+
+
+        return trim($errors);
+    }
+
+    private function checkUpdateData($body){
+
+        $errors = "";
+
+        if(isset($body['tittle']) && empty($body['title'])){
+            $errors .="O campo 'title' não pode ser vazio. \n";
+        }
+
+        return trim($errors);
     }
 }

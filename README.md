@@ -118,3 +118,7 @@ Extra:
 - Na rota de inserção e alteração de produto, alterei a dinâmica do category_id, agora a API aceitará um id único no campo e também um array, caso o produto possua mais de 1 categoria a qual pertença.
 
 - Também adicionei o try, pois dessa forma poderemos ter controle dos erros e não deixar que os mesmos sejam exibidos no retorno da API, apenas as mensagens de erro que retornamos, deixando assim os retornos da API mais "limpos".
+
+## Alterações adicionais para deixar a API mais estável 26/01/2024 - 17:50
+
+- Adição de erros específicos na API, informando os campos que são obrigatórios, adição de funções privadas em productService e CategoryService, para checagem dos campos durante adição e alteração dos elementos.
