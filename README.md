@@ -78,7 +78,7 @@ Sinta-se a vontade para refatorar o que achar pertinente, considerando questões
 
 Boa sorte! :)
 
-## Suas Respostas, Duvidas e Observações
+## Suas Respostas, Duvidas e Observações 24/01/2024 - 20:00
 
 
 Para as atualizações em categorias:
@@ -104,3 +104,17 @@ Para a atualização de Logs:
 
 Extra:
 - na listagem de todos os produtos, alterei a query para que trouxesse todas as categorias dos produtos separada por virgula.
+
+
+
+## Alterações adicionais para deixar a API mais estável 26/01/2024 - 13:00
+
+- Quando não era enviado admin_user_id para a API, ocorria um erro, porém agora a API informa ao usuário que o campo deve ser enviado. Apenas nas rotas em que o mesmo era utilizado.
+
+- Ao dar erro em alguma rota (UPDATE, INSERT ou DELETE), ele retornava apenas o número 404 no status, agora retorna também um json com um status ("success" ou "error") e uma message, para que fique claro para o cliente que ocorreu um erro. (foi alterado apenas nas funções de categoria e produto)
+
+- Já nos services, alterei para deixar a API mais estável usando transaction, dessa forma durante um delete de produto por exemplo, caso haja erro durante o delete do produto, poderemos dar rollback no delete da relação produto-categoria. Apliquei apenas nas rotas em que fazem mais de 1 query por vez, pois caso a segunda dê algum erro, poderemos reverter a primeira.
+
+- Na rota de inserção e alteração de produto, alterei a dinâmica do category_id, agora a API aceitará um id único no campo e também um array, caso o produto possua mais de 1 categoria a qual pertença.
+
+- Também adicionei o try, pois dessa forma poderemos ter controle dos erros e não deixar que os mesmos sejam exibidos no retorno da API, apenas as mensagens de erro que retornamos, deixando assim os retornos da API mais "limpos".
