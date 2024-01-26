@@ -152,8 +152,12 @@ class CategoryService
 
         $errors = "";
 
-        if(isset($body['tittle']) && empty($body['title'])){
+        if(empty($body['title'])){
             $errors .="O campo 'title' não pode ser vazio. \n";
+        }
+
+        if(!isset($body['active'])){
+            $errors .="O campo 'active' é obrigatório. \n";
         }
 
         return trim($errors);

@@ -331,20 +331,24 @@ class ProductService
 
         $errors = "";
 
-        if(isset($body['company_id']) && empty($body['company_id'])){
-            $errors .="O campo 'company_id' não pode ser vazio. \n";
+        if(empty($body['company_id'])){
+            $errors .="O campo 'company_id' é obrigatório. \n";
         }
 
-        if(isset($body['tittle']) && empty($body['title'])){
-            $errors .="O campo 'title' não pode ser vazio. \n";
+        if(empty($body['title'])){
+            $errors .="O campo 'title' é obrigatório. \n";
         }
 
-        if(isset($body['price']) && empty($body['price'])){
-            $errors .="O campo 'price' não pode ser vazio.\n";
+        if(empty($body['price'])){
+            $errors .="O campo 'price' é obrigatório.\n";
         }
 
-        if(isset($body['category_id']) && empty($body['category_id'])){
-            $errors .="O campo 'category_id' não pode ser vazio. \n";
+        if(!isset($body['active'])){
+            $errors .="O campo 'active' é obrigatório. \n";
+        }
+
+        if(empty($body['category_id'])){
+            $errors .="O campo 'category_id' é obrigatório. \n";
         }
 
         return trim($errors);
